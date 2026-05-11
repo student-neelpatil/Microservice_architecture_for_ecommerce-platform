@@ -1,6 +1,9 @@
 import User from "./auth.model.js";
 
 import { hashPassword } from "../../utils/hash.js";
+import { comparePassword } from "../../utils/hash.js";
+import { generateAccessToken } from "../../utils/generateTokens.js";
+import { generateRefreshToken } from "../../utils/generateTokens.js";
 
 
 
@@ -29,9 +32,7 @@ async (data) => {
     );
 
   }
-
-
-
+   
   const hashedPassword =
     await hashPassword(
       data.password
@@ -50,3 +51,41 @@ async (data) => {
 
   return user;
 };
+
+
+
+export const loginService = async (data) => {
+
+   const extingUser = await User.findOne({
+    
+    where: {
+      email: data.email,
+    },
+  });
+
+  if (!extingUser) {
+    throw new Error("Invalid credentials");
+  }
+
+  const newHashedPassword = await hashPassword(data.password);
+
+  //compare password
+
+  const isPasswordMatched = await comparePassword(data.password, newHashedPassword);
+
+  if (!isPasswordMatched) {
+    throw new Error("Invalid credentials");
+ }
+  
+ //generate tokens
+
+    const accessToken = generateAccessToken(extingUser);
+
+    const refreshToken = generateRefreshToken(extingUser);
+
+  return {
+    extingUser,accessToken,refreshToken,
+ }; 
+
+
+}
