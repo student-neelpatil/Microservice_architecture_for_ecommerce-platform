@@ -5,7 +5,10 @@ import { loginService } from "./auth.service.js";
 import {registerSchema} from  "./auth.validation.js";
 import {loginSchema} from "./auth.validation.js";
 
-export const register = async (
+import asyncHandler from "express-async-handler";
+
+export const register = asyncHandler(
+    async (
     req,
     res
 ) => {
@@ -20,10 +23,10 @@ export const register = async (
         success: true,
         user,
     });
+  
+});
 
-};
-
-export const login=async(req,res)=>{
+export const login=asyncHandler(async (req, res) => {
 
     const validatedData = loginSchema.parse(req.body);
 
@@ -36,4 +39,4 @@ export const login=async(req,res)=>{
 
 
 
-}
+});
