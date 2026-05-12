@@ -5,6 +5,10 @@ import asyncHandler from "express-async-handler"
 import { getProductsService } from "./product.service.js";
 import { getProductByIdService } from "./product.service.js";
 
+import {updateProductSchema} from "./product.validation.js";
+
+import {updateProductService} from "./product.service.js";
+
 export const createproduct=asyncHandler(
     async(req,res)=>{
 
@@ -72,6 +76,43 @@ asyncHandler(async (req, res) => {
     res.status(200).json({
 
       success: true,
+      product,
+
+    });
+
+  }
+
+);
+
+/*
+===================================
+UPDATE PRODUCT
+===================================
+*/
+
+export const updateProduct =
+asyncHandler(
+
+  async (req, res) => {
+
+    const validatedData =
+      updateProductSchema.parse(
+        req.body
+      );
+
+    const product =
+      await updateProductService(
+
+        req.params.id,
+
+        validatedData
+
+      );
+
+    res.status(200).json({
+
+      success: true,
+
       product,
 
     });

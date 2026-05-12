@@ -19,3 +19,5 @@ export const ProductSchema =
             z.string().optional(),
 
     });
+
+export const updateProductSchema =ProductSchema.partial();
