@@ -1,4 +1,4 @@
-import { createProduct } from "./product.service.js";
+import { createProductService } from "./product.service.js";
 import { ProductSchema } from "./product.validation.js";
 import asyncHandler from "express-async-handler"
 
@@ -27,7 +27,7 @@ export const createproduct=asyncHandler(
 
         //create a product
 
-       await createProduct(validateddata);
+       await createProductService(validateddata);
 
         res.json({
             success:true,

@@ -193,16 +193,10 @@ asyncHandler(
 
   async (req, res) => {
 
-    await deleteCategoryService(
-
-      req.params.id
-
-    );
+    await deleteCategoryService(req.params.id);
 
     res.status(200).json({
-
       success: true,
-
       message:
         "Category deleted successfully",
 

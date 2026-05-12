@@ -1,14 +1,77 @@
-import Product from "./product.model.js";
+import Product
+from "./product.model.js";
 
-export const createProduct=async(data)=>{
+import Category
+from "../category/category.model.js";
 
-    //creating new product
+/*
+===================================
+COMMON CATEGORY INCLUDE
+===================================
+*/
 
-    const product=await Product.create(data);
+const categoryInclude = [
 
-    return product;
-}
+  {
+    model: Category,
+  },
 
+];
+
+/*
+===================================
+CREATE PRODUCT
+===================================
+*/
+
+export const createProductService =
+async (data) => {
+
+  /*
+
+  VERIFY CATEGORY EXISTS
+ 
+  */
+
+  const category =
+    await Category.findByPk(
+      data.categoryId
+    );
+
+  if (!category) {
+
+    throw new Error(
+      "Invalid category"
+    );
+
+  }
+
+  /*
+  ===============================
+  CREATE PRODUCT
+  ===============================
+  */
+
+  const product =
+    await Product.create(data);
+
+  /*
+  ===============================
+  RETURN PRODUCT WITH CATEGORY
+  ===============================
+  */
+
+  return await Product.findByPk(
+
+    product.id,
+
+    {
+      include: categoryInclude,
+    }
+
+  );
+
+};
 
 /*
 ===================================
@@ -22,8 +85,13 @@ async () => {
   const products =
     await Product.findAll({
 
+      include:
+        categoryInclude,
+
       order: [
+
         ["createdAt", "DESC"]
+
       ],
 
     });
@@ -31,7 +99,6 @@ async () => {
   return products;
 
 };
-
 
 /*
 ===================================
@@ -43,7 +110,16 @@ export const getProductByIdService =
 async (id) => {
 
   const product =
-    await Product.findByPk(id);
+    await Product.findByPk(
+
+      id,
+
+      {
+        include:
+          categoryInclude,
+      }
+
+    );
 
   if (!product) {
 
@@ -57,7 +133,6 @@ async (id) => {
 
 };
 
-
 /*
 ===================================
 UPDATE PRODUCT
@@ -66,6 +141,12 @@ UPDATE PRODUCT
 
 export const updateProductService =
 async (id, data) => {
+
+  /*
+  ===============================
+  FIND PRODUCT
+  ===============================
+  */
 
   const product =
     await Product.findByPk(id);
@@ -78,9 +159,53 @@ async (id, data) => {
 
   }
 
+  /*
+  ===============================
+  VERIFY CATEGORY IF UPDATED
+  ===============================
+  */
+
+  if (data.categoryId) {
+
+    const category =
+      await Category.findByPk(
+        data.categoryId
+      );
+
+    if (!category) {
+
+      throw new Error(
+        "Invalid category"
+      );
+
+    }
+
+  }
+
+  /*
+  ===============================
+  UPDATE PRODUCT
+  ===============================
+  */
+
   await product.update(data);
 
-  return product;
+  /*
+  ===============================
+  RETURN UPDATED PRODUCT
+  ===============================
+  */
+
+  return await Product.findByPk(
+
+    product.id,
+
+    {
+      include:
+        categoryInclude,
+    }
+
+  );
 
 };
 
