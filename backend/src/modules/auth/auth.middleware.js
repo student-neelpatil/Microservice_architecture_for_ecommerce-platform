@@ -19,6 +19,7 @@ export const authMiddleware = (req, res, next) => {
      //verifying the token
 
     try {
+
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
         //attach user info to request object
@@ -36,3 +37,67 @@ export const authMiddleware = (req, res, next) => {
 
 
 }
+
+
+/*
+===================================
+ROLE AUTHORIZATION MIDDLEWARE
+===================================
+*/
+
+export const authorize =(...allowedRoles) => {
+
+  return (req, res, next) => {
+
+    /*
+    ============================
+    CHECK AUTHENTICATED USER
+    ============================
+    */
+
+    if (!req.user) {
+
+      return res.status(401).json({
+        success: false,
+        message:
+          "Unauthorized access",
+
+      });
+
+    }
+
+    /*
+    ============================
+    CHECK USER ROLE
+    ============================
+    */
+
+    const userRole =req.user.role;
+
+    const isAuthorized =
+      allowedRoles.includes(
+        userRole
+      );
+
+    if (!isAuthorized) {
+
+      return res.status(403).json({
+      success: false,
+      message:
+          "You do not have permission to access this resource",
+
+      });
+
+    }
+
+    /*
+    ============================
+    CONTINUE REQUEST
+    ============================
+    */
+
+    next();
+
+  };
+
+};
