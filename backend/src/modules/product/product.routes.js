@@ -8,6 +8,7 @@ import { authorize } from "../auth/auth.middleware.js";
 import { getProducts } from "./product.controller.js";
 import { getProductById } from "./product.controller.js";
 import { updateProduct } from "./product.controller.js";
+import { deleteProduct } from "./product.controller.js";
 
 router.post("/createproduct", authMiddleware, authorize("ADMIN"), createproduct);
 router.get("/test", (req, res) => {
@@ -18,5 +19,6 @@ router.get("/test", (req, res) => {
 router.get("/",getProducts);
 router.get("/:id",getProductById);
 router.patch("/:id",authMiddleware,authorize("ADMIN"),updateProduct);
+router.delete("/:id",authMiddleware,authorize("ADMIN"),deleteProduct);
 
 export default router;

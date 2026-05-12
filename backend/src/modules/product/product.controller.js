@@ -9,6 +9,8 @@ import {updateProductSchema} from "./product.validation.js";
 
 import {updateProductService} from "./product.service.js";
 
+import { deleteProductService } from "./product.service.js";
+
 export const createproduct=asyncHandler(
     async(req,res)=>{
 
@@ -114,6 +116,36 @@ asyncHandler(
       success: true,
 
       product,
+
+    });
+
+  }
+
+);
+
+/*
+===================================
+DELETE PRODUCT
+===================================
+*/
+
+export const deleteProduct =
+asyncHandler(
+
+  async (req, res) => {
+
+    await deleteProductService(
+
+      req.params.id
+
+    );
+
+    res.status(200).json({
+
+      success: true,
+
+      message:
+        "Product deleted successfully",
 
     });
 

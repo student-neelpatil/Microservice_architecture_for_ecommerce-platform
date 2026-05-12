@@ -83,3 +83,27 @@ async (id, data) => {
   return product;
 
 };
+
+/*
+===================================
+DELETE PRODUCT
+===================================
+*/
+
+export const deleteProductService =
+async (id) => {
+
+  const product =
+    await Product.findByPk(id);
+
+  if (!product) {
+
+    throw new Error(
+      "Product not found"
+    );
+
+  }
+
+  await product.destroy();
+
+};
