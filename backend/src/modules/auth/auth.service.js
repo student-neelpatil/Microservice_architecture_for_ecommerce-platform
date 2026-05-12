@@ -42,10 +42,9 @@ async (data) => {
     await User.create({
 
       name: data.name,
-
       email: data.email,
-
       password: hashedPassword,
+      role:data.role,
 
     });
 
