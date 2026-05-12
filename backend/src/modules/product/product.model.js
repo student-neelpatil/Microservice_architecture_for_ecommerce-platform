@@ -5,6 +5,8 @@ import {
 import sequelize
 from "../../config/db.js";
 
+import Category from "../category/category.model.js";
+
 const Product = sequelize.define(
 
   "Product",
@@ -46,6 +48,19 @@ const Product = sequelize.define(
     imageUrl: {
       type: DataTypes.STRING,
     },
+
+     /*
+    ===============================
+    FOREIGN KEY
+    ===============================
+    */
+
+    categoryId: {
+
+      type:DataTypes.UUID,
+      allowNull: false,
+
+    },
   },
 
   {
@@ -53,5 +68,36 @@ const Product = sequelize.define(
   }
 
 );
+
+
+/*
+===================================
+RELATIONSHIPS
+===================================
+*/
+
+/*
+One Category
+has many Products
+*/
+
+Category.hasMany(Product, {
+
+  foreignKey:
+    "categoryId",
+
+});
+
+/*
+Each Product
+belongs to one Category
+*/
+
+Product.belongsTo(Category, {
+
+  foreignKey:
+    "categoryId",
+
+});
 
 export default Product;
