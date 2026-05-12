@@ -4,6 +4,8 @@ from "./product.model.js";
 import Category
 from "../category/category.model.js";
 
+import { Op } from "sequelize";
+
 /*
 ===================================
 COMMON CATEGORY INCLUDE
@@ -17,6 +19,32 @@ const categoryInclude = [
   },
 
 ];
+
+
+
+const sortOptions = {
+
+  latest:
+    ["createdAt", "DESC"],
+
+  oldest:
+    ["createdAt", "ASC"],
+
+  price_asc:
+    ["price", "ASC"],
+
+  price_desc:
+    ["price", "DESC"],
+
+  name_asc:
+    ["name", "ASC"],
+
+  name_desc:
+    ["name", "DESC"],
+
+};
+
+
 
 /*
 ===================================
@@ -82,9 +110,48 @@ GET ALL PRODUCTS
 export const getProductsService =
 async (query) => {
 
-  const where={};
+ const order = [
 
-  where.categoryId=query.Category;
+  sortOptions[query.sort] || sortOptions.latest
+];
+
+
+  const where={};
+  
+  
+ if(query.category){
+  
+   where.categoryId=query.Category;
+
+ }
+  
+ ///api/products?search=iphone
+
+ if (query.search) {
+
+/*
+  Apply filter on name column
+  here in product table we have name column so it search through name colunm 
+  and whose name matches with search is filter
+*/
+    where.name = {
+
+      [Op.iLike]:
+        `%${query.search}%`,
+
+    };
+
+  }
+ 
+
+  if(query.minPrice){
+    where.price[Op.gte]=Number(query.minPrice);
+  }
+
+  if(query.maxPrice){
+    where.price[Op.lte]=Number(query.maxPrice);
+  }
+
 
 
   const products =
@@ -95,11 +162,7 @@ async (query) => {
       include:
         categoryInclude,
 
-      order: [
-
-        ["createdAt", "DESC"]
-
-      ],
+      order
 
     });
 
