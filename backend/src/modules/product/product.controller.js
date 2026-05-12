@@ -49,7 +49,7 @@ asyncHandler(
   async (req, res) => {
 
     const products =
-      await getProductsService();
+      await getProductsService(req.query);
 
     res.status(200).json({
 

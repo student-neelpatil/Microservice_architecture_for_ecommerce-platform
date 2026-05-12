@@ -80,10 +80,17 @@ GET ALL PRODUCTS
 */
 
 export const getProductsService =
-async () => {
+async (query) => {
+
+  const where={};
+
+  where.categoryId=query.Category;
+
 
   const products =
     await Product.findAll({
+
+      where,
 
       include:
         categoryInclude,
