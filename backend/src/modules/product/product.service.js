@@ -8,3 +8,50 @@ export const createProduct=async(data)=>{
 
     return product;
 }
+
+
+/*
+===================================
+GET ALL PRODUCTS
+===================================
+*/
+
+export const getProductsService =
+async () => {
+
+  const products =
+    await Product.findAll({
+
+      order: [
+        ["createdAt", "DESC"]
+      ],
+
+    });
+
+  return products;
+
+};
+
+/*
+===================================
+GET PRODUCT BY ID
+===================================
+*/
+
+export const getProductByIdService =
+async (id) => {
+
+  const product =
+    await Product.findByPk(id);
+
+  if (!product) {
+
+    throw new Error(
+      "Product not found"
+    );
+
+  }
+
+  return product;
+
+};
